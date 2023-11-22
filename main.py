@@ -3,7 +3,7 @@ from tkinter import filedialog
 import wfdb as wfdb
 from matplotlib import pyplot as plt
 from numpy import *
-import csv
+
 
 # """
 file = filedialog.askopenfilename(initialdir=".", filetypes=[("Plik DAT", "*.dat")])
