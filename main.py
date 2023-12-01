@@ -3,61 +3,48 @@ from tkinter import filedialog
 import wfdb as wfdb
 from matplotlib import pyplot as plt
 from numpy import *
+import neurokit2 as nk
 
 
-# """
-file = filedialog.askopenfilename(initialdir=".", filetypes=[("Plik DAT", "*.dat")])
+"""
+file = filedialog.askopenfilename(initialdir=".", filetypes=[("Plik DAT", "*.dat")])  # wczytanie z pliku, potrzebny dodatkowy plik .hea z informacjami
 filename = str(file)
 name = filename[0:len(filename)-4]
 print(name)
 # """
 
-# name = "132022-2023-04-27-10-44-55_MG_ramp"
+name = "132022-2023-04-27-10-44-55_MG_ramp"  # pliki z dorobionymi nagłówkami
+# name = "132022-2023-05-19-09-50-04_MG_const"
 
-# """
-
-
-# ecg_data_raw = wfdb.rdsamp("132022-2023-04-27-10-44-55_MG_ramp")
 ecg_data_raw = wfdb.rdrecord(name)
-
-"""
-print(len(ecg_data_raw))
-print(ecg_data_raw[1])
-print(len(ecg_data_raw[0]))
-print(len(ecg_data_raw[0][0]))
-
-dane = [[], [], [], [], [], [], [], [], [], [], [], []]
-for a in ecg_data_raw[0]:
-    for x in range(len(a)):
-        dane[x].append(a[x])
-"""
+fs = 512  # nie wiem, ale wydaje się w miarę ok
 
 zapis = []
-# """
-print(ecg_data_raw)
+
 for i in range(len(ecg_data_raw.p_signal[0])):
     dane = []
     for a in range(len(ecg_data_raw.p_signal)):
         dane.append(ecg_data_raw.p_signal[a][i])
     zapis.append(dane)
-freq = ecg_data_raw.fs
-print(freq)
-e = ecg_data_raw
-print(e.n_sig)
-print(e.fmt)
-print(e.baseline)
 
-print(len(zapis))
 print(len(zapis[0]))
+x = [i/fs for i in range(len(zapis[0]))]
+print(len(x))
 
+"""
 fig, axes = plt.subplots(3, 4)
-
+minn, maxx = 80, 3000
 for i in range(len(axes)):
     for j in range(len(axes[0])):
-        axes[i][j].plot(zapis[j + i * 4][42:])
-        axes[i][j].set_title("lead " + str(j + i * 4 +1))
+        axes[i][j].plot(x[minn:maxx], zapis[j + i * 4][minn:maxx])
+        axes[i][j].set_title("lead " + str(j + i * 4 + 1) + "?")
 
 plt.show()
-
 # """
 
+minn, maxx = 80, 5000
+signals, info = nk.ecg_process(zapis[1], fs)
+nk.ecg_plot(signals, info)
+fig = plt.gcf()
+fig.set_size_inches(10, 12, forward=True)
+fig.savefig("myfig2.png")
