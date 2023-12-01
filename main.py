@@ -1,10 +1,12 @@
-from tkinter import filedialog
+# Na podstawie 12 kanałowych zapisów EKG rejestrowanych podczas wysiłku na ergometrze rowerowym wyznacz czasy trwania
+# interwałów RR. Przedstaw rekomendacje dotyczące wstępnej obróbki sygnałów EKG i oceny występowania artefaktów.
+# Którego kanału użyłbyś/użyłabyś do wyznaczania rytmu serca?
 
+from tkinter import filedialog
 import wfdb as wfdb
 from matplotlib import pyplot as plt
 from numpy import *
 import neurokit2 as nk
-
 
 """
 file = filedialog.askopenfilename(initialdir=".", filetypes=[("Plik DAT", "*.dat")])  # wczytanie z pliku, potrzebny dodatkowy plik .hea z informacjami
@@ -13,8 +15,10 @@ name = filename[0:len(filename)-4]
 print(name)
 # """
 
-name = "132022-2023-04-27-10-44-55_MG_ramp"  # pliki z dorobionymi nagłówkami
+name = "132022-2023-04-27-10-44-55_MG_ramp"  # przykładowe pliki
 # name = "132022-2023-05-19-09-50-04_MG_const"
+
+
 
 ecg_data_raw = wfdb.rdrecord(name)
 fs = 512  # nie wiem, ale wydaje się w miarę ok
@@ -31,20 +35,22 @@ print(len(zapis[0]))
 x = [i/fs for i in range(len(zapis[0]))]
 print(len(x))
 
-"""
+# """   # wszystkie 12 zapisów na jednym wykresie
 fig, axes = plt.subplots(3, 4)
 minn, maxx = 80, 3000
 for i in range(len(axes)):
     for j in range(len(axes[0])):
         axes[i][j].plot(x[minn:maxx], zapis[j + i * 4][minn:maxx])
-        axes[i][j].set_title("lead " + str(j + i * 4 + 1) + "?")
+        axes[i][j].set_title("lead " + str(j + i * 4 + 1) + "?") 
 
 plt.show()
 # """
 
-minn, maxx = 80, 5000
+"""  # analiza zapisu korzystając z gotowego pakietu do wykresu
+minn, maxx = 80, 5000  # zakres bo inaczej jest średio czytelny wykres
 signals, info = nk.ecg_process(zapis[1], fs)
 nk.ecg_plot(signals, info)
 fig = plt.gcf()
 fig.set_size_inches(10, 12, forward=True)
 fig.savefig("myfig2.png")
+# """
