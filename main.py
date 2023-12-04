@@ -19,7 +19,7 @@ print(name)
 # name = "132022-2023-05-19-09-50-04_MG_const"
 
 ecg_data_raw = wfdb.rdrecord(name)
-fs = 500  # nie wiem, ale wydaje się w miarę ok
+fs = 500
 
 zapis = []
 
