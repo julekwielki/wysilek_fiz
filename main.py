@@ -19,7 +19,7 @@ print(name)
 # name = "132022-2023-05-19-09-50-04_MG_const"
 
 ecg_data_raw = wfdb.rdrecord(name)
-fs = 500
+fs = 512  # nie wiem, ale wydaje się w miarę ok
 
 zapis = []
 
@@ -35,22 +35,20 @@ print(len(x))
 
 # """   # wszystkie 12 zapisów na jednym wykresie
 fig, axes = plt.subplots(3, 4)
-minn, maxx = 80, 1400
+minn, maxx = 80, len(x)
 for i in range(len(axes)):
     for j in range(len(axes[0])):
         axes[i][j].plot(x[minn:maxx], zapis[j + i * 4][minn:maxx])
         axes[i][j].set_title("lead " + str(j + i * 4 + 1) + "?") 
-fig.set_size_inches(15, 10, forward=True)
-fig.savefig(name +" 16 .png")
-# plt.show()
 
+plt.show()
 # """
-nr = 0
+
 """  # analiza zapisu korzystając z gotowego pakietu do wykresu
 minn, maxx = 80, 5000  # zakres bo inaczej jest średio czytelny wykres
-signals, info = nk.ecg_process(zapis[nr], fs)
+signals, info = nk.ecg_process(zapis[1][minn:maxx], fs)
 nk.ecg_plot(signals, info)
 fig = plt.gcf()
 fig.set_size_inches(10, 12, forward=True)
-fig.savefig("32 " + name + " " + str(nr) +" cale.png")
+fig.savefig("myfig2.png")
 # """
